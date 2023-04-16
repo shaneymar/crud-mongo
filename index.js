@@ -6,7 +6,7 @@ const config = require("./config.json");
 //configure server
 
 let app = express();
-
+app.use(express.json());
 //create Schema
 
 let Schema = mongoose.Schema;
@@ -46,33 +46,64 @@ mongoose.connect(url)
 //Create
 let user = new User({
     title : "Superman",
-    firstname : "Clark",
-    lastname : "Kent",
-    power : 7,
+     firstname : "Clark",
+     lastname : "Kent",
+     power : 7,
     City : "Metropolis",
 });
-user.save()
-.then(dbres => console.log(dbres.title, " was added"))
-.catch(err => console.log("Error ", err)); 
+
+app.post("/data", function(req,res){
+    let user = new User(req.body);
+    user.save()
+    .then(dbres =>res.status(200).send({"message": dbres.title+ "was added to DB"}))
+    .catch(err => {
+        console.log("Error Fetching Records", err);
+        res.send(400).send({"Error": "Something went Wrong - error adding user"})
+    }); 
+})
+
 
 
 //Read
-app.get("/",function(req, res){
+app.get("/data",function(req, res){
+    console.log(req);
     User.find()
-    .then(dbres => res.send(dbres))
-    .catch(err => console.log("Error Fetching Records", err))
+    .then(dbres => res.status(200).send(dbres))
+    .catch(err => {
+        console.log("Error Fetching Records", err);
+        res.send(400).send({"error": "something went  wrong"})
+        })
 });
 
+//Read before update
+app.get("/update/:id", function(req,res){
+    User.findByIdAndUpdate({ _id : req.params.id })
+    .then(dbres => res.status(200).send(dbres))
+    .catch(err => {
+        console.log("Error Fetching Records", err);
+        res.send(400).send({"error": "Error Finding User"})
+    });
+})
+
+//Read before update
+app.get("/update/:id", function(req,res){
+    User.findByIdAndUpdate({ _id : req.params.id })
+    .then(dbres => res.status(200).send(dbres))
+    .catch(err => {
+        console.log("Error Fetching Records", err);
+        res.send(400).send({"error": "Error Finding User"})
+    });
+})
 
 //update
-User.findByIdAndUpdate({ _id : "643ad5f89a23228e916df13c" })
-.then( dbres => {
-    let user = new User(dbres);
-    user.power = 10;
-    user.City = "Bangalore";
-    user.save().then(updatedinfo => console.log("updated")).catch(error => console.log("Error ", errror))
-})
-.catch(err => console.log("Error ", err));
+// User.findByIdAndUpdate({ _id : "643ad5f89a23228e916df13c" })
+// .then( dbres => {
+//     let user = new User(dbres);
+//     user.power = 10;
+//     user.City = "Bangalore";
+//     user.save().then(updatedinfo => console.log("updated")).catch(error => console.log("Error ", errror))
+// })
+// .catch(err => console.log("Error ", err));
 
 
  
