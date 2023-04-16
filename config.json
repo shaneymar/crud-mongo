@@ -1,0 +1,9 @@
+{
+    "port": 5050,
+    "host": "localhost",
+    "password": "IKV3oylsAVj7HSi5",
+    "user":"admin",
+    "dbname" :"shankardb",
+    "dbstring":"hbhpxsx",
+    "url": "mongodb+srv://{{user}}:{{password}}@{{dbname}}.{{dbstring}}.mongodb.net/userdb?retryWrites=true&w=majority"
+}
